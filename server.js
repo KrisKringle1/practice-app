@@ -1,6 +1,30 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const app = express();
+const MongoClient = require('mongodb').MongoClient
+const connectionString = 'mongodb+srv://kris:pp031693@cluster0-vfymn.mongodb.net/quotes?retryWrites=true&w=majority'
+MongoClient.connect(connectionString, { useUnifiedTopology: true })
+  .then(client => {
+    console.log('Connected to Database')
+    const db = client.db('star-wars-quotes')
+    const quotesCollection = db.collection('quotes')
+
+    app.post('/quotes', (req, res) => {
+
+      quotesCollection.insertOne(req.body)
+        .then(result => {
+          console.log(result)
+          res.redirect('/')
+        })
+        .catch(error => console.error(error))
+
+      console.log(req.body)
+    })
+    app.get('/', (req, res) => {
+      const cursor = db.collection('quotes').find().toArray()
+      console.log(cursor)
+    })
+  })
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -9,11 +33,4 @@ app.listen(3000, function () {
 })
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
-})
-
-
-app.post('/quotes', (req, res) => {
-
-
-  console.log(req.body)
 })
