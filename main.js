@@ -1,3 +1,13 @@
+const form = document.getElementById('form');
+
+form.addEventListener('click', (e) => {
+  e.preventDefault()
+})
+
+
+
+
+
 // //form
 // const body = document.querySelector('body')
 // const div = document.createElement('div')
